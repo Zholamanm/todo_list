@@ -59,8 +59,8 @@ export default {
     },
   },
   async created() {
-    await this.fetchTasks();
     await this.firstLogin();
+    await this.fetchTasks();
   },
   methods: {
     async firstLogin() {
@@ -77,7 +77,11 @@ export default {
     },
     async fetchTasks() {
       try {
-        const response = await axios.get('http://localhost:8000/api/tasks');
+        const response = await axios.get('http://localhost:8000/api/tasks', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
         this.tasks = response.data;
       } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -110,7 +114,11 @@ export default {
     },
     async addTask(task) {
       try {
-        const response = await axios.post('http://localhost:8000/api/tasks', task);
+        const response = await axios.post('http://localhost:8000/api/tasks', task, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
         this.tasks.push(response.data);
       } catch (error) {
         console.error('Error adding task:', error);
@@ -118,20 +126,28 @@ export default {
     },
     async updateTask(task) {
       try {
-        await axios.put(`http://localhost:8000/api/tasks/${task.id}`, task);
+        await axios.put(`http://localhost:8000/api/tasks/${task.id}`, task, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
       } catch (error) {
         console.error('Error updating task:', error);
       }
     },
     async deleteTask(taskId) {
       try {
-        await axios.delete(`http://localhost:8000/api/tasks/${taskId}`);
+        await axios.delete(`http://localhost:8000/api/tasks/${taskId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
         this.tasks = this.tasks.filter(task => task.id !== taskId);
       } catch (error) {
         console.error('Error deleting task:', error);
       }
     },
-    async updateTaskOrder( moved ) {
+    async updateTaskOrder(moved) {
       if (moved) {
         const task = moved.item._underlying_vm_;
         task.status = moved.to.parentNode.dataset.status;

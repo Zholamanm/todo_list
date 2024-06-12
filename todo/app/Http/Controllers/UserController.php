@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Faker\Factory as Faker;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 
 class UserController extends Controller
@@ -18,6 +19,8 @@ class UserController extends Controller
         $user->email = $faker->unique()->safeEmail;
         $user->password = bcrypt('password');
         $user->save();
+
+        Auth::login($user);
 
         $token = $user->createToken('authToken')->plainTextToken;
 

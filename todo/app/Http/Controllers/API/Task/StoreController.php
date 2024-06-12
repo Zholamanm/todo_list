@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API\Task;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use http\Client\Curl\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
@@ -22,6 +24,7 @@ class StoreController extends Controller
             'description' => $request->description,
             'status' => $request->status,
             'priority' => $request->priority,
+            'user_id' => Auth::id()
         ]);
 
         return response()->json($task, 201);
